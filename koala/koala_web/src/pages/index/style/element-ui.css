@@ -1,0 +1,14 @@
+.el-table .warning-row {
+    background: oldlace;
+}
+
+.el-table .success-row {
+    background: #f0f9eb;
+}
+/* .el-table .row-type {
+    background: #f0f0f0;
+} */
+
+.task-record .el-table {
+    border-color: #d1d5da;
+}

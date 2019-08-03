@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+
+  server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: koala/server:1.0
+    ports:
+      - "5001:80"
+    environment:
+      - RELEASE_DB_HOST=192.168.25.120:15432
+      - RELEASE_DB_USER=postgres
+      - RELEASE_DB_PASSWD=pset123456
+      - RELEASE_DB_NAME=quotation
+      - RELEASE_CACTUS_URL=http://192.168.3.126:8080/

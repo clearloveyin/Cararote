@@ -1,0 +1,65 @@
+
+//常量
+$screen_max_width:1280px;
+$screen_min_width:720px;
+$padding_width:5px;
+$min_height:100px;
+$width_300:320px;
+// 一些常用的公共配置样式
+.warpper{
+    max-width: $screen_max_width;
+    min-width: $screen_min_width;
+    margin: 0 auto;
+    .left-fl{ // 左浮动
+        float: left;
+    }
+    .right-fl{ // 右浮动
+        float: right;
+        display: flex
+
+    }
+    .header{
+        height: 40px;
+        line-height: 40px;
+    }
+    .header-left{
+
+    }
+    .header-right{
+
+    }
+    .padding{
+        padding: 0 $padding_width 0 $padding_width
+    }
+    .sidebar{ // 左边树模块样式
+        width: $width_300;
+        min-width: 200px;
+        position: relative;
+        left: 0;
+        transition: all .85s;
+        background-color: rgb(192, 255, 128);
+        height: 100%;
+    }
+    .sidebar.collapsed {
+        left: -$width_300;
+        margin-right: -$width_300;
+    }
+    .content {
+        width: 100%;
+        background-color: yellow;
+
+    }
+}
+
+.flex{ // 弹性盒子
+    display: flex;
+    // min-height: $min_height;
+}
+.position{ //相对定位
+    position: relative;
+}
+.position-ab{ //绝对定位
+    position: absolute;
+    top: 0;
+    left: 0;
+}

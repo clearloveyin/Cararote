@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "koala.fullname" . }}-server
+  labels:
+    app.kubernetes.io/name: {{ include "koala.name" . }}-server
+    helm.sh/chart: {{ include "koala.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}-server
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.server.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "koala.name" . }}-server
+      app.kubernetes.io/instance: {{ .Release.Name }}-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "koala.name" . }}-server
+        app.kubernetes.io/instance: {{ .Release.Name }}-server
+    spec:
+      initContainers:
+        - name: wait-for-postgresql
+          image: "alpine:3.8"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          command:
+            - sh
+            - -c
+            - |
+              until printf "." && nc -z -w 2 {{ template "postgresql.hostname" . }} {{ .Values.postgresql.service.port }}; do
+                  sleep 2;
+              done;
+
+              echo 'PostgreSQL OK ✓'
+      containers:
+        - name: {{ .Chart.Name }}-server
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+          {{- range $key, $value :=  .Values.server.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+            - name: RELEASE_DB_HOST
+              value: "{{ template "postgresql.hostname" . }}:{{- .Values.postgresql.service.port -}}"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+      {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.server.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.server.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

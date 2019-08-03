@@ -1,0 +1,14 @@
+perm_name|type
+创建项目|项目
+编辑项目|项目
+删除项目|项目
+人员设置权限|项目
+项目配置|项目
+Feature查看|Feature
+编辑Feature|Feature
+发布Feature|Feature
+Merge&横展Feature|Feature
+Spec查看|Spec
+编辑Spec|Spec
+承认Spec|Spec
+Merge&横展Spec|Spec

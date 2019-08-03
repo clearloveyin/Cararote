@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:9.5
+#    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pset123456
+      POSTGRES_DB: quotation
+      PGDATA: /var/lib/postgresql/pgdata
+    ports:
+      - "15432:5432"
+    volumes:
+      - ./db/pgdata:/var/lib/postgresql/pgdata
+  server:
+    build:
+      context: ./koala_server
+      dockerfile: Dockerfile
+    image: koala/server:1.0
+    environment:
+      - RELEASE_DB_HOST=192.168.25.120:15432
+      - RELEASE_DB_USER=postgres
+      - RELEASE_DB_PASSWD=pset123456
+      - RELEASE_DB_NAME=quotation
+      - RELEASE_CACTUS_URL=https://cactus.suntec.net/
+    ports:
+      - "5001:80"
+    depends_on:
+      - postgres
+  client:
+    build:
+      context: ./koala_web
+      dockerfile: Dockerfile
+    image: koala/client:1.0
+    environment:
+      - SERVER_URL=192.168.25.120:5001
+    ports:
+      - 8092:80
+    depends_on:
+      - server

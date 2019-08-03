@@ -1,0 +1,40 @@
+{{- if .Values.server.ingress.enabled -}}
+{{- $fullName := include "koala.fullname" . -}}
+{{- $ingressPaths := .Values.server.ingress.paths -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-srv
+  labels:
+    app.kubernetes.io/name: {{ include "koala.name" . }}-srv
+    helm.sh/chart: {{ include "koala.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}-srv
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.server.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.server.ingress.tls }}
+  tls:
+  {{- range .Values.server.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.server.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+	{{- range $ingressPaths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-server
+              servicePort: http
+	{{- end }}
+  {{- end }}
+{{- end }}

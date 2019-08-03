@@ -1,0 +1,1 @@
+koala_server项目，存储缓存的目录.用于FileSystemCache

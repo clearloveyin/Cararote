@@ -1,0 +1,18 @@
+.handsontable .currentRow {
+    background-color: #e7e8ef;
+}
+
+.handsontable .currentCol {
+    background-color: #f9f9fb;
+}
+
+.ht_clone_top th {
+    background-color: rgb(253, 233, 217);
+}
+.handsontable .ht_clone_top_left_corner th {
+    background-color: rgb(183, 222, 232);
+}
+
+.handsontable.listbox td.htDimmed {
+    text-align: left;
+}

@@ -1,0 +1,145 @@
+# Default values for koala.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+server:
+  replicaCount: 1
+
+  image:
+    repository: iregistry.iauto.com/hongcz/koala/sever
+    tag: latest
+    pullPolicy: Always
+
+  env:
+    # RELEASE_DB_HOST: 192.168.25.120:15432
+    RELEASE_DB_USER: postgres
+    RELEASE_DB_PASSWD: pset123456
+    RELEASE_DB_NAME: quotation
+    RELEASE_CACTUS_URL: https://cactus.suntec.net/
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "false"
+      nginx.ingress.kubernetes.io/proxy-body-size: 900m
+    paths: ['/']
+    hostnameforweb: koala-srv.ci.iauto.com
+    hosts:
+      - koala-srv.ci.iauto.com
+    tls: []
+    #  - secretName: koala.ci.iauto.com-tls
+    #    hosts:
+    #      - koala.ci.iauto.com
+
+  resources: 
+    limits:
+      cpu: 1000m
+      memory: 4G
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+web:
+  replicaCount: 1
+
+  image:
+    repository: iregistry.iauto.com/hongcz/koala/web
+    tag: latest
+    pullPolicy: Always
+
+  env: []
+    # SERVER_URL: 192.168.25.120:5001
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  service:
+    type: ClusterIP
+    port: 80
+    # nodePort: 
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "false"
+      nginx.ingress.kubernetes.io/proxy-body-size: 900m
+    paths: ['/']
+    hosts:
+      - koala.ci.iauto.com
+    tls: []
+    #  - secretName: koala.ci.iauto.com-tls
+    #    hosts:
+    #      - koala.ci.iauto.com
+
+  resources: 
+    limits:
+      cpu: 100m
+      memory: 1G
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+postgresql:
+  ### PostgreSQL User to create.
+  ##
+  postgresUser: postgres
+
+  ## PostgreSQL Password for the new user.
+  ## If not set, a random 10 characters password will be used.
+  ##
+  postgresPassword: "pset123456"
+
+  ## PostgreSQL Database to create.
+  ##
+  postgresDatabase: quotation
+
+  ## PostgreSQL data dir
+  ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+  ##
+  postgresqlDataDir: /var/lib/postgresql/pgdata
+
+  ## PostgreSQL service configuration
+  service:
+    ## PosgresSQL service type
+    type: ClusterIP
+    # clusterIP: None
+    port: 5432
+
+  ## Persistent Volume Storage configuration.
+  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+  ##
+  persistence:
+    ## Enable PostgreSQL persistence using Persistent Volume Claims.
+    ##
+    enabled: false
+    mountPath: /var/lib/postgresql/pgdata
+    size: 64Gi
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m

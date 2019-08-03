@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "koala.fullname" . }}-server
+  labels:
+    app.kubernetes.io/name: {{ include "koala.name" . }}-server
+    helm.sh/chart: {{ include "koala.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}-server
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.server.service.type }}
+  ports:
+    - port: {{ .Values.server.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "koala.name" . }}-server
+    app.kubernetes.io/instance: {{ .Release.Name }}-server
