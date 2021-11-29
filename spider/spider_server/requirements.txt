@@ -11,4 +11,4 @@ flask_caching==1.7.1
 flask_httpauth==3.2.4
 flask-migrate==2.4.0
 flask-script==2.0.6
-python-ldap==3.2.0
+python-ldap==3.4.0
